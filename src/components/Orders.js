@@ -13,6 +13,7 @@ function Orders() {
                 if (orderData.addNoodle === 2 && orderData.item.nameDish !== 'Mì trộn siêu topping') extraCost += 7;
                 if (orderData.addNoodle === 3) extraCost += 14;
                 if (orderData.takeaway === "có") extraCost += 2;
+                if (orderData.drink) extraCost += 10;
                 orderData.totalPrice += extraCost;
                 orders.push(orderData);
             });
@@ -32,9 +33,6 @@ function Orders() {
             second: "2-digit" 
         });
     };
-    // const handleComplete = (orderId) => {
-    //     setCompletedOrders((prev) => new Set(prev).add(orderId));
-    // };
     const handleComplete = async (orderId) => {
         try {
             await updateDoc(doc(db, "orders", orderId), { isCompleted: true });
@@ -53,6 +51,7 @@ function Orders() {
                                 <li>Giờ đặt: {formatDate(dt.createdAt)}</li>
                                 <li>Sức ăn: {dt.addNoodle <= 0 ? 1 : dt.addNoodle} gói</li>
                                 <li>Độ lì: {dt.spicy}</li>
+                                <li>Đồ uống: {dt.drinkText}</li>
                                 <li>Ghi chú: {dt.note}</li>
                                 <li>{dt.takeaway === "có" ? 'Mang về' : 'Ăn tại quán'}</li>
                             </ul>

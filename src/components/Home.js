@@ -39,9 +39,6 @@ function Home() {
             case 'MỲ TRỘN':
                 setData(dataall.filter(item => item.category === 'Mỳ Trộn'));
                 break;
-            case 'ĐỒ UỐNG':
-                setData(dataall.filter(item => item.category === 'đồ uống'));
-                break;
             case 'TOPPING':
                 setData(dataall.filter(item => item.category === 'topping'));
                 break;
@@ -57,10 +54,9 @@ function Home() {
             setIsOpenModal(true);
             Object.assign(newOrder, {item: {
                 dish: { idDish: `${item.category}-${item.priceDish}`, nameDish: item.nameDish || '', price: item.priceDish || 0 },
-                drink: { idDrink: `${item.category}-${item.priceDrink}`, nameDrink: item.nameDrink || '', price: item.priceDrink || 0 },
                 topping: { idTopping: `${item.category}-${item.priceTopping}`, nameTopping: item.nameTopping || '', price: item.priceTopping || 0 },
             }});
-            Object.assign(newOrder, {totalPrice: item.priceDish || 0 + item.priceDrink || 0 + item.priceTopping || 0});
+            Object.assign(newOrder, {totalPrice: item.priceDish || 0 + item.priceTopping || 0});
             Object.assign(newOrder, {createdAt: new Date()});
             // const docRef = await addDoc(collection(db, "orders"), newOrder);
         } catch (error) {
@@ -78,8 +74,9 @@ function Home() {
         let uploadNewOrder = {
             ...newOrder,
             addNoodle: Number(orderData.addNoodle),
-            spicy: orderData.spicy,
-            takeaway: orderData.takeaway,
+            spicy: orderData.spicy || null,
+            drink: orderData.drink || null,
+            takeaway: orderData.takeaway || null,
             note: orderData.note,
         };
         await addDoc(collection(db, "orders"), uploadNewOrder);
@@ -111,7 +108,7 @@ function Home() {
                                 <Modal open={isOpenModal} onCancel={handleCancel}>
                                     <form onSubmit={handleSubmitForm} id="simple-order">
                                         <div className="question">
-                                            <p style={{marginBottom: '10px'}}>Bạn muốn ăn thêm mì?</p>
+                                            <p style={{marginBottom: '10px'}}>Bạn muốn ăn mấy gói mì?</p>
                                             <input className="note-order" type="number" name="addNoodle"/>
                                         </div>
                                         <div className="question">
@@ -124,6 +121,18 @@ function Home() {
                                             <p>Mang về?</p>
                                             <input type="radio" name="takeaway" value="có" id="yes"/> <label htmlFor="yes">Có</label><br/>
                                             <input type="radio" name="takeaway" value="không" id="no"/> <label htmlFor="no">Không</label><br/>
+                                        </div>
+                                        <div className="question">
+                                            <label htmlFor="beverageSelect">Loại nước:</label>
+                                            <select id="beverageSelect" name="drink">
+                                                <option value="">-- Vui lòng chọn --</option>
+                                                <option value="nuoc_loc">Nước lọc</option>
+                                                <option value="tra">Trà xanh</option>
+                                                <option value="c2">C2</option>
+                                                <option value="tra_olong">Trà Olong</option>
+                                                <option value="sting_do">Sting đỏ</option>
+                                                <option value="sting_vang">Sting vàng</option>
+                                            </select>
                                         </div>
                                         <div className="note">
                                             <p>Ghi chú</p><br/>
